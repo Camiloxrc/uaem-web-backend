@@ -55,3 +55,8 @@ async function init() {
   );
 }
 init();
+
+/*Dedicado a Marcelino por ser un ejemplo a seguir.
+Todo hombre muere, pero no todos los hombres realmente viven como tú lo hiciste.
+Por siempre y para siempre tu familia estara contigo donde quiera que estes) Cuidate brother))))
+*/

@@ -1,0 +1,24 @@
+"""
+La informacion del usuario con relacion a la base de datos, 
+manejando como referencia el formato ISO para los casos de 
+registerdate y birthday
+
+"""
+type User {
+    "Identificador Unico"
+    id: ID!
+    "Nombre"
+    name: String!
+    "Apellido"
+    lastname: String!
+    "Correo  Unico"
+    email: String!
+    "Contrasena"
+    password: String!
+    "Fecha de registro"
+    registerdate: String!
+    "Cumpleanos"
+    birthday: String!
+    "Permisos del usuario"
+    role: Role!
+}

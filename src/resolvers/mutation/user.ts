@@ -1,13 +1,14 @@
-import { COLLECTIONS } from './../config/constants';
+import { insertOneElement } from './../../lib/db-operations';
+import { COLLECTIONS } from './../../config/constants';
 import { IResolvers } from 'graphql-tools';
 import bcrypt from 'bcrypt';
+import { asignDocumentId, findOneElement } from '../../lib/db-operations';
 
-const resolversMutation: IResolvers = {
+const resolversUserMutation: IResolvers = {
   Mutation: {
     async register(_, { user }, { db }) {
       //comprobacion que las credenciales del usuario aun no estan registradas
-        const userCheck = await db.collection(COLLECTIONS.USERS).
-          findOne({email: user.email});
+        const userCheck = await findOneElement(db,COLLECTIONS.USERS,{email: user.email});
 
           if(userCheck !== null){
             return {
@@ -17,17 +18,7 @@ const resolversMutation: IResolvers = {
             };
           }
       //Asignacion de la id tomando en cuanta el ultimo user registrado
-      const lastUser = await db
-        .collection(COLLECTIONS.USERS)
-        .find()
-        .limit(1)
-        .sort({ registerdate: -1 })
-        .toArray();
-      if (lastUser.length === 0) {
-        user.id = 1;
-      } else {
-        user.id = lastUser[0].id + 1;
-      }
+          user.id = await asignDocumentId(db,COLLECTIONS.USERS, {registerdate: -1 });
       //Asignamos la fecha con el formato ISO
       user.registerdate = new Date().toISOString();
 
@@ -35,9 +26,7 @@ const resolversMutation: IResolvers = {
         user.password = bcrypt.hashSync(user.password, 10);
       
       //Guardar los datos en la coleccion de la db
-      return await db
-        .collection(COLLECTIONS.USERS)
-        .insertOne(user)
+      return await insertOneElement(db, COLLECTIONS.USERS, user)
         .then(async () => {
           return {
             status: true,
@@ -59,4 +48,4 @@ const resolversMutation: IResolvers = {
   },
 };
 
-export default resolversMutation;
+export default resolversUserMutation;

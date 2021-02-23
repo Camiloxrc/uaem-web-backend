@@ -1,0 +1,10 @@
+"Lista de usuarios en la bse de datos"
+type Query {
+    users: ResultUsers
+    "Inicio de sesion"
+    login(email: String!, password: String!): ResultLogin
+    "Autenticacion con el token"
+    me: ResultUser
+    "Lista de productos"
+    products: Boolean
+}

@@ -1,9 +1,10 @@
-import { COLLECTIONS, EXPIRETIME, MESSAGES } from './../config/constants';
+import { findOneElement, findElements } from './../../lib/db-operations';
+import { COLLECTIONS, EXPIRETIME, MESSAGES } from './../../config/constants';
 import { IResolvers } from 'graphql-tools';
-import JWT from '../lib/jwt';
+import JWT from './../../lib/jwt';
 import bcrypt from 'bcrypt';
 
-const resolversQuery: IResolvers = {
+const resolversUserQuery: IResolvers = {
   Query: {
     //Query lista de usuarios
     async users(_, __, { db }) {
@@ -11,7 +12,7 @@ const resolversQuery: IResolvers = {
         return {
           status: true,
           message: 'Lista cargada',
-          users: await db.collection(COLLECTIONS.USERS).find().toArray(),
+          users: await findElements(db,COLLECTIONS.USERS),
         };
       } catch (error) {
         console.log(error);
@@ -26,9 +27,7 @@ const resolversQuery: IResolvers = {
     async login(_, { email, password }, { db }) {
       try {
         //metodo para verificar si el usuario existe
-        const user = await db
-          .collection(COLLECTIONS.USERS)
-          .findOne({ email });
+        const user = await findOneElement(db,COLLECTIONS.USERS, { email });
         if (user === null) {
           return {
             status: false,
@@ -50,7 +49,7 @@ const resolversQuery: IResolvers = {
           status: true,
           message:
             !passwordCheck
-              ? 'Usuario y contrasena incorrectos'
+              ? 'Contrasena incorrecta'
               : 'Inicio de sesion exitoso',
           token: 
             !passwordCheck
@@ -84,4 +83,4 @@ const resolversQuery: IResolvers = {
   },
 };
 
-export default resolversQuery;
+export default resolversUserQuery;

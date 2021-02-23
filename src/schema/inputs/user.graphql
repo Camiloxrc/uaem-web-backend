@@ -1,0 +1,16 @@
+"Establecemos los parametros para agregar usuarios al registro"
+input UserInput{
+    id: ID
+    "Nombre"
+    name: String!
+    "Apellido"
+    lastname: String!
+    "Correo  Unico"
+    email: String!
+    "Contrasena"
+    password: String!
+    "Cumpleanos"
+    birthday: String!
+    "Permisos del usuario"
+    role: Role = CLIENT
+}

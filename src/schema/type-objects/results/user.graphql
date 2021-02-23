@@ -1,0 +1,17 @@
+type ResultUsers implements Result {
+    "Estado de la operacion"
+    status: Boolean!
+    "Mnesaje de la operacion"
+    message: String!
+    "Usuarios en la base de datos"
+    users: [User!]!
+}
+
+type ResultUser implements Result {
+    "Estado de la operacion"
+    status: Boolean!
+    "Mnesaje de la operacion"
+    message: String!
+    "info del Usuario"
+    user: User
+}

@@ -1,0 +1,4 @@
+"Opciones de escritura registro"
+type Mutation  {
+    register(user: UserInput!): ResultUser
+}
