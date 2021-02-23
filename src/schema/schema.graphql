@@ -1,0 +1,93 @@
+"Lista de usuarios en la bse de datos"
+type Query {
+    users: ResultUsers
+    "Inicio de sesion"
+    login(email: String!, password: String!): ResultLogin
+    "Autenticacion con el token"
+    me: ResultUser
+}
+"Opciones de escritura registro"
+type Mutation  {
+    register(user: UserInput!): ResultUser
+}
+
+interface Result {
+    "Estado de la operacion"
+    status: Boolean!
+    "Mnesaje de la operacion"
+    message: String!
+}
+
+type ResultUsers implements Result {
+    "Estado de la operacion"
+    status: Boolean!
+    "Mnesaje de la operacion"
+    message: String!
+    "Usuarios en la base de datos"
+    users: [User!]!
+}
+
+type ResultUser implements Result {
+    "Estado de la operacion"
+    status: Boolean!
+    "Mnesaje de la operacion"
+    message: String!
+    "info del Usuario"
+    user: User
+}
+
+type ResultLogin implements Result {
+    "Estado de la operacion"
+    status: Boolean!
+    "Mnesaje de la operacion"
+    message: String!
+    "login del usuario por medio de token"
+    token: String
+}
+
+"""
+La informacion del usuario con relacion a la base de datos, 
+manejando como referencia el formato ISO para los casos de 
+registerdate y birthday
+
+"""
+type User {
+    "Identificador Unico"
+    id: ID!
+    "Nombre"
+    name: String!
+    "Apellido"
+    lastname: String!
+    "Correo  Unico"
+    email: String!
+    "Contrasena"
+    password: String!
+    "Fecha de registro"
+    registerdate: String!
+    "Cumpleanos"
+    birthday: String!
+    "Permisos del usuario"
+    role: Role!
+}
+
+"Establecemos los parametros para agregar usuarios al registro"
+input UserInput{
+    id: ID
+    "Nombre"
+    name: String!
+    "Apellido"
+    lastname: String!
+    "Correo  Unico"
+    email: String!
+    "Contrasena"
+    password: String!
+    "Cumpleanos"
+    birthday: String!
+    "Permisos del usuario"
+    role: Role = CLIENT
+}
+"Tipos de permisos que van a tener los usuarios"
+enum Role {
+    CLIENT
+    ADMIN
+}
