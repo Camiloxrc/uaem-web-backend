@@ -9,7 +9,7 @@ import { Db } from 'mongodb';
 export const asignDocumentId = async (
   database: Db,
   collection: string,
-  sort: object = { registerDate: -1 }
+  sort: object = { registerdate: -1 }
 ) => {
   const lastElement = await database
     .collection(collection)

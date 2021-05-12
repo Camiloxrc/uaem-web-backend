@@ -1,5 +1,6 @@
 import { IResolvers } from 'graphql-tools';
 import UsersService from '../../services/users.service';
+
 const resolversUserQuery: IResolvers = {
   Query: {
     async users(_, __, context) {

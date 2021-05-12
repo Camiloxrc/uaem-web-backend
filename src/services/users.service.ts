@@ -4,6 +4,7 @@ import { IContextData } from '../interfaces/context-data.interface';
 import ResolversOperationsService from './resolvers-operations.service';
 import bcrypt from 'bcrypt';
 import JWT from '../lib/jwt';
+
 class UsersService extends ResolversOperationsService {
     private collection = COLLECTIONS.USERS;
     constructor(root: object, variables: object, context: IContextData) {
@@ -48,7 +49,7 @@ class UsersService extends ResolversOperationsService {
             if (passwordCheck !== null) {
               delete user.password;
               delete user.birthday;
-              delete user.registerDate;
+              delete user.registerdate;
             }
             return {
               status: passwordCheck,
@@ -108,7 +109,7 @@ class UsersService extends ResolversOperationsService {
       }
 
       // El ultimo usuario registrado para asignar ID
-      user!.id = await asignDocumentId(this.getDb(), this.collection, { registerDate: -1 });
+      user!.id = await asignDocumentId(this.getDb(), this.collection, { registerdate: -1 });
       // Asignar la fecha en formato ISO en la propiedad registerDate
       user!.registerdate = new Date().toISOString();
       // Encriptar password
