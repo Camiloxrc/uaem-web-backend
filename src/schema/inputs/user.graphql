@@ -8,7 +8,7 @@ input UserInput{
     "Correo  Unico"
     email: String!
     "Contrasena"
-    password: String!
+    password: String
     "Cumpleanos"
     birthday: String!
     "Permisos del usuario"

@@ -1,0 +1,6 @@
+"Item de las propiedades de los elementos para la api"
+interface Item {
+    id: ID!
+    name: String!
+    slug: String!
+}

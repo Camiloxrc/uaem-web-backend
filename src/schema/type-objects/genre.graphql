@@ -1,0 +1,6 @@
+"Objeto para la informacion de los generos de la tienda"
+type Genre implements Item {
+    id: ID!
+    name: String!
+    slug: String!
+}

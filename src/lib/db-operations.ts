@@ -1,9 +1,15 @@
-import { Db } from "mongodb";
-//asignacion del ID para el usuario
+import { Db } from 'mongodb';
+
+/**
+ * Obtener el ID que vamos a utilizar en el nuevo usuario
+ * @param database Base de datos con la que estamos trabajando
+ * @param collection Collección donde queremos buscar el último elemento
+ * @param sort Como queremos ordenarlo { <propiedad>: -1 }
+ */
 export const asignDocumentId = async (
-  database: Db, //base de datos
-  collection: string, //coleccion en donde se hara la busqueda
-  sort: object = { registerdate: -1 } //manera de ordenar
+  database: Db,
+  collection: string,
+  sort: object = { registerDate: -1 }
 ) => {
   const lastElement = await database
     .collection(collection)
@@ -12,39 +18,58 @@ export const asignDocumentId = async (
     .sort(sort)
     .toArray();
   if (lastElement.length === 0) {
-    return 1;
+    return '1';
   }
-  return lastElement[0].id + 1;
+  return String(+lastElement[0].id + 1);
 };
 
 export const findOneElement = async (
-  database: Db, //base de datos
-  collection: string, //coleccion en donde se hara la busqueda
+  database: Db,
+  collection: string,
   filter: object
 ) => {
   return database.collection(collection).findOne(filter);
 };
 
 export const insertOneElement = async (
-  database: Db, //base de datos
-  collection: string, //coleccion en donde se hara la busqueda
+  database: Db,
+  collection: string,
   document: object
 ) => {
   return await database.collection(collection).insertOne(document);
 };
 
 export const insertManyElements = async (
-  database: Db, //base de datos
-  collection: string, //coleccion en donde se hara la busqueda
-  documents: Array<object> //listasssssss de documentos
+  database: Db,
+  collection: string,
+  documents: Array<object>
 ) => {
   return await database.collection(collection).insertMany(documents);
 };
 
-export const findElements = async (
-    database: Db, //base de datos
-    collection: string, //coleccion en donde se hara la busqueda
-    filter: object = {}
+export const updateOneElement = async (
+  database: Db,
+  collection: string,
+  filter: object,
+  updateObject: object
 ) => {
-    return await database.collection(collection).find(filter).toArray();
+  return await database
+    .collection(collection)
+    .updateOne(filter, { $set: updateObject });
+};
+
+export const deleteOneElement = async (
+  database: Db,
+  collection: string,
+  filter: object = {}
+) => {
+  return await database.collection(collection).deleteOne(filter);
+};
+
+export const findElements = async (
+  database: Db,
+  collection: string,
+  filter: object = {}
+) => {
+  return await database.collection(collection).find(filter).toArray();
 };

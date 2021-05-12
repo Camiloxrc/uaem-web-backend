@@ -39,7 +39,7 @@ async function init() {
 
   server.applyMiddleware({app});
   app.get('/',expressPlayground({
-    endpoint: 'graphql'
+    endpoint: '/graphql'
   }));
 
 //Creacion del http escuachando las peticiones del puerto 8000
