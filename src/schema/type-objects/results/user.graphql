@@ -1,4 +1,6 @@
 type ResultUsers implements Result {
+    "Mostra información del sistema de paginación"
+    info: ResultInfo
     "Estado de la operacion"
     status: Boolean!
     "Mnesaje de la operacion"
