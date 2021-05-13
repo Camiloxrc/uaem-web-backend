@@ -10,6 +10,7 @@ export const SECRET_KEY = process.env.SECRET || 'gonzamalparido12xd';
 export enum COLLECTIONS {
   USERS = 'users',
   GENRES = 'genres',
+  TAGS = 'tags'
 }
 
 //Mensajes de error

@@ -1,5 +1,5 @@
-import { Db } from 'mongodb';
-import { IPaginationOptions } from '../interfaces/pagination-options.interface';
+import { Db } from "mongodb";
+import { IPaginationOptions } from "../interfaces/pagination-options.interface";
 
 /**
  * Obtener el ID que vamos a utilizar en el nuevo usuario
@@ -19,7 +19,7 @@ export const asignDocumentId = async (
     .sort(sort)
     .toArray();
   if (lastElement.length === 0) {
-    return '1';
+    return "1";
   }
   return String(+lastElement[0].id + 1);
 };
@@ -90,6 +90,10 @@ export const findElements = async (
     .toArray();
 };
 
-export const countElements = async (database: Db, collection: string) => {
-  return await database.collection(collection).countDocuments();
+export const countElements = async (
+  database: Db,
+  collection: string,
+  filter: object = {}
+) => {
+  return await database.collection(collection).countDocuments(filter);
 };

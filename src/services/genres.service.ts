@@ -27,7 +27,7 @@ class GenresService extends ResolversOperationsService {
         if (!this.checkData(genre || '')) {
             return {
                 status: false,
-                message: 'El genero no se especifico correctamente',
+                message: 'El genero no se especifico',
                 genre: null
             };
         }
@@ -35,7 +35,7 @@ class GenresService extends ResolversOperationsService {
         if (await this.checkInDatabase(genre || '')) {
             return {
                 status: false,
-                message: 'Este genero ya se encuentra registado',
+                message: 'Este genero ya esta registado',
                 genre: null
             };
         }
@@ -54,14 +54,14 @@ class GenresService extends ResolversOperationsService {
         if (!this.checkData(String(id) || '')) {
             return {
                 status: false,
-                message: 'El ID del genero no se especifico correctamente',
+                message: 'El id del genero no se especifico',
                 genre: null
             };
         }
         if (!this.checkData(genre || '')) {
             return {
                 status: false,
-                message: 'El genero no se especifico correctamente',
+                message: 'El genero no se especifico',
                 genre: null
             };
         }
@@ -79,12 +79,28 @@ class GenresService extends ResolversOperationsService {
         if (!this.checkData(String(id) || '')) {
             return {
                 status: false,
-                message: 'El id del genero no se especifico correctamente',
+                message: 'El id del genero no se especifico',
                 genre: null
             };
         }
         const result = await this.del(this.collection, { id }, 'genero');
         return { status: result.status, message: result.message };
+    }
+
+    async block() {
+        const id = this.getVariables().id;
+        if (!this.checkData(String(id) || '')) {
+            return {
+                status: false,
+                message: 'El ID del género no se ha especificado correctamente',
+                genre: null
+            };
+        }
+        const result = await this.update(this.collection, { id }, { active: false }, 'género');
+        return {
+            status: result.status,
+            message: (result.status) ? 'Bloqueado correctamente': 'No se ha bloqueado comprobarlo por favor'
+        };
     }
     private checkData(value: string) {
         return (value === '' || value === undefined) ? false: true;

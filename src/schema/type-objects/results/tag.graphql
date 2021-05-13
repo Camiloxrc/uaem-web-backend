@@ -1,0 +1,12 @@
+"Almacenamiento de la tienda UAEM"
+type ResultTag implements Result {
+    info: ResultInfo
+    "Estado de la operación"
+    status: Boolean!
+    "Mensaje de la operación"
+    message: String!
+    "Información del tag seleccionado"
+    tag: Tag
+    "Lista de tags seleccionadas"
+    tags: [Tag!]
+} 

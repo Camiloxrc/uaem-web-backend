@@ -34,7 +34,7 @@ class UsersService extends ResolversOperationsService {
     }
     return {
       status: true,
-      message: 'Usuario autenticado correctamente mediante el token',
+      message: 'Usuario verificado con el token',
       user: Object.values(info)[0],
     };
   }
@@ -48,7 +48,7 @@ class UsersService extends ResolversOperationsService {
       if (user === null) {
         return {
           status: false,
-          message: 'Usuario no existe',
+          message: 'El usuario no existe',
           token: null,
         };
       }
@@ -65,8 +65,8 @@ class UsersService extends ResolversOperationsService {
       return {
         status: passwordCheck,
         message: !passwordCheck
-          ? 'Password y usuario no son correctos, sesión no iniciada'
-          : 'Usuario cargado correctamente',
+          ? 'Contraseña Incorrecta'
+          : `Bienvenido ${user?.name}`,
         token: !passwordCheck ? null : new JWT().sign({ user }, EXPIRETIME.H24),
         user: !passwordCheck ? null : user,
       };
@@ -75,7 +75,7 @@ class UsersService extends ResolversOperationsService {
       return {
         status: false,
         message:
-          'Error al cargar el usuario. Comprueba que tienes correctamente todo.',
+          'Error CRITICO al cargar los datos del usuario',
         token: null,
       };
     }
@@ -88,7 +88,7 @@ class UsersService extends ResolversOperationsService {
     if (user === null) {
       return {
         status: false,
-        message: 'Usuario no definido, procura definirlo',
+        message: 'Usuario no establecido',
         user: null,
       };
     }
@@ -99,7 +99,7 @@ class UsersService extends ResolversOperationsService {
     ) {
       return {
         status: false,
-        message: 'Usuario sin password correcto, procura definirlo',
+        message: 'Contraseña no valida',
         user: null,
       };
     }
@@ -111,7 +111,7 @@ class UsersService extends ResolversOperationsService {
     if (userCheck !== null) {
       return {
         status: false,
-        message: `El email ${user?.email} está registrado y no puedes registrarte con este email`,
+        message: `El email ${user?.email} se encuentra registrado`,
         user: null,
       };
     }
@@ -140,7 +140,7 @@ class UsersService extends ResolversOperationsService {
     if (user === null) {
       return {
         status: false,
-        message: 'Usuario no definido, procura definirlo',
+        message: 'Usuario establecido',
         user: null,
       };
     }
@@ -164,7 +164,7 @@ class UsersService extends ResolversOperationsService {
       return {
         status: false,
         message:
-          'Identificador del usuario no definido, procura definirlo para eliminar el usuario',
+          'Identificador no valido',
         user: null,
       };
     }
@@ -174,6 +174,24 @@ class UsersService extends ResolversOperationsService {
       message: result.message,
     };
   }
+  async block() {
+    const id = this.getVariables().id;
+    if (!this.checkData(String(id) || '')) {
+        return {
+            status: false,
+            message: 'El ID del usuario no se ha especificado correctamente',
+            genre: null
+        };
+    }
+    const result = await this.update(this.collection, { id }, { active: false }, 'usuario');
+    return {
+        status: result.status,
+        message: (result.status) ? 'Bloqueado correctamente': 'No se ha bloqueado comprobarlo por favor'
+    };
+  }
+  private checkData(value: string) {
+    return (value === '' || value === undefined) ? false: true;
+}
 }
 
 export default UsersService;

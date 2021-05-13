@@ -1,14 +1,14 @@
-import { IVariables } from './../interfaces/variables-interface';
-import { IContextData } from './../interfaces/context-data.interface';
+import { IVariables } from "./../interfaces/variables-interface";
+import { IContextData } from "./../interfaces/context-data.interface";
 import {
   findElements,
   findOneElement,
   insertOneElement,
   updateOneElement,
   deleteOneElement,
-} from './../lib/db-operations';
-import { Db } from 'mongodb';
-import { pagination } from '../lib/pagination';
+} from "./../lib/db-operations";
+import { Db } from "mongodb";
+import { pagination } from "../lib/pagination";
 
 class ResolversOperationsService {
   private variables: IVariables;
@@ -18,7 +18,9 @@ class ResolversOperationsService {
     this.context = context;
   }
 
-  protected getContext(): IContextData { return this.context; }
+  protected getContext(): IContextData {
+    return this.context;
+  }
   protected getDb(): Db {
     return this.context.db!;
   }
@@ -26,26 +28,38 @@ class ResolversOperationsService {
     return this.variables;
   }
   // Listar información
-  protected async list(collection: string, listElement: string, page: number = 1, itemsPage: number = 20) {
+  protected async list(
+    collection: string,
+    listElement: string,
+    page: number = 1,
+    itemsPage: number = 20,
+    filter: object = { active: { $ne: false}}
+  ) {
     try {
       console.log(page, itemsPage);
-      const paginationData = await pagination(this.getDb(), collection, page, itemsPage);
+      const paginationData = await pagination(
+        this.getDb(),
+        collection,
+        page,
+        itemsPage,
+        filter
+      );
       return {
         info: {
           page: paginationData.page,
           pages: paginationData.pages,
           itemsPage: paginationData.itemsPage,
-          total: paginationData.total
+          total: paginationData.total,
         },
         status: true,
-        message: `Lista de ${listElement} correctamente cargada`,
+        message: `Lista de ${listElement} cargada`,
         items: await findElements(this.getDb(), collection, {}, paginationData),
       };
     } catch (error) {
       return {
         info: null,
         status: false,
-        message: `Lista de ${listElement} no cargada: ${error}`,
+        message: `Lista de ${listElement} sin datos: ${error}`,
         items: null,
       };
     }
@@ -60,7 +74,7 @@ class ResolversOperationsService {
         if (result) {
           return {
             status: true,
-            message: `${collectionLabel} ha sido cargada correctamente con sus detalles`,
+            message: `${collectionLabel} ha sido cargada`,
             item: result,
           };
         }
@@ -73,7 +87,7 @@ class ResolversOperationsService {
     } catch (error) {
       return {
         status: false,
-        message: `Error inesperado al querer cargar los detalles de ${collectionLabel}`,
+        message: `Error CRITICO EN los detalles de ${collectionLabel}`,
         item: null,
       };
     }
@@ -86,13 +100,13 @@ class ResolversOperationsService {
           if (res.result.ok === 1) {
             return {
               status: true,
-              message: `Añadido correctamente el ${item}.`,
+              message: `Se agrego correctamnte el ${item}.`,
               item: document,
             };
           }
           return {
             status: false,
-            message: `No se ha insertado el ${item}. Inténtalo de nuevo por favor`,
+            message: `No se pudo agregar el ${item}.`,
             item: null,
           };
         }
@@ -100,7 +114,7 @@ class ResolversOperationsService {
     } catch (error) {
       return {
         status: false,
-        message: `Error inesperado al insertar el ${item}. Inténtalo de nuevo por favor`,
+        message: `Error CRITICO al agregar el ${item}.`,
         item: null,
       };
     }
@@ -122,20 +136,20 @@ class ResolversOperationsService {
         if (res.result.nModified === 1 && res.result.ok) {
           return {
             status: true,
-            message: `Elemento del ${item} actualizado correctamente.`,
+            message: `Elemento ${item} actualizado correctamente.`,
             item: Object.assign({}, filter, objectUpdate),
           };
         }
         return {
           status: false,
-          message: `Elemento del ${item} No se ha actualizado. Comprueba que estás filtrando correctamente o simplemente que no hay nada que actualizar`,
+          message: `Elemento ${item} No se ha actualizado.`,
           item: null,
         };
       });
     } catch (error) {
       return {
         status: false,
-        message: `Error inesperado al actualizar el ${item}. Inténtalo de nuevo por favor`,
+        message: `Error CRITICO al actualizar el ${item}.`,
         item: null,
       };
     }
@@ -148,19 +162,19 @@ class ResolversOperationsService {
           if (res.deletedCount === 1) {
             return {
               status: true,
-              message: `Elemento del ${item} borrado correctamente.`,
+              message: `Elemento ${item} eliminado correctamente.`,
             };
           }
           return {
             status: false,
-            message: `Elemento del ${item} No se ha borrado. Comprueba el filtro.`,
+            message: `Elemento ${item} No se ha podido eliminar.`,
           };
         }
       );
     } catch (error) {
       return {
         status: false,
-        message: `Error inesperado al eliminar el ${item}. Inténtalo de nuevo por favor`,
+        message: `Error CRITICO al intentar eliminar el ${item}.`,
       };
     }
   }
