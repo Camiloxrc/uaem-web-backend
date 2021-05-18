@@ -9,13 +9,13 @@ import expressPlayground from 'graphql-playground-middleware-express';
 import Database from './lib/database';
 import { IContext } from './interfaces/context.interface';
 
-//variables de entorno conf 
+// variables de entorno conf 
 if(process.env.NODE_ENV !== 'production'){
   const env = environments;
   console.log(env);
 }
 
-//Creacion del servidor Node Express
+// Creacion del servidor Node Express
 async function init() {
   const app = express();
   app.use(cors());
@@ -26,23 +26,23 @@ async function init() {
   const db = await database.init();
   //conexion mediante el token
   const context = async({req, connection}: IContext) => {
-    const token = (req) ? req.headers.authorization : connection.authorization;
+    const token = req ? req.headers.authorization : connection.authorization;
     return { db, token };
   };
 
-  //imp apollo server
+  // imp apollo server
   const server = new ApolloServer({
     schema,
     introspection: true,
-    context
+    context,
   });
 
   server.applyMiddleware({app});
   app.get('/',expressPlayground({
-    endpoint: '/graphql'
+    endpoint: '/graphql',
   }));
 
-//Creacion del http escuachando las peticiones del puerto 8000
+// Creacion del http escuachando las peticiones del puerto 8000
 
   const httpServer = createServer(app);
   const PORT =process.env.PORT || 8000;
@@ -51,12 +51,9 @@ async function init() {
     {
       port: PORT
     },
-    () => console.log(`http://localhost:${PORT} No more fake tears`)
+    () => {
+      console.log(`http://localhost:${PORT} Conexion a base de datos`);
+    }
   );
 }
 init();
-
-/*Dedicado a Marcelino por ser un ejemplo a seguir.
-Todo hombre muere, pero no todos los hombres realmente viven como tú lo hiciste.
-Por siempre y para siempre tu familia estara contigo donde quiera que estes) Cuidate brother))))
-*/

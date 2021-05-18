@@ -4,6 +4,7 @@ import { IContextData } from '../interfaces/context-data.interface';
 import ResolversOperationsService from './resolvers-operations.service';
 import bcrypt from 'bcrypt';
 import JWT from '../lib/jwt';
+import MailService from './mail.service';
 class UsersService extends ResolversOperationsService {
   private collection = COLLECTIONS.USERS;
   constructor(root: object, variables: object, context: IContextData) {
@@ -14,7 +15,12 @@ class UsersService extends ResolversOperationsService {
   async items() {
     const page = this.getVariables().pagination?.page;
     const itemsPage = this.getVariables().pagination?.itemsPage;
-    const result = await this.list(this.collection, 'usuarios', page, itemsPage);
+    const result = await this.list(
+      this.collection,
+      'usuarios',
+      page,
+      itemsPage
+    );
     return {
       info: result.info,
       status: result.status,
@@ -74,8 +80,7 @@ class UsersService extends ResolversOperationsService {
       console.log(error);
       return {
         status: false,
-        message:
-          'Error CRITICO al cargar los datos del usuario',
+        message: 'Error CRITICO al cargar los datos del usuario',
         token: null,
       };
     }
@@ -116,17 +121,17 @@ class UsersService extends ResolversOperationsService {
       };
     }
 
-    // COmprobar el último usuario registrado para asignar ID
+    // asignar ID con wl ultimo usuario de referencia
     user!.id = await asignDocumentId(this.getDb(), this.collection, {
       registerdate: -1,
     });
-    // Asignar la fecha en formato ISO en la propiedad registerdate
+    // Asignar la fecha
     user!.registerdate = new Date().toISOString();
-    // Encriptar password
+    // Encriptar contrasena
     user!.password = bcrypt.hashSync(user!.password, 10);
 
     const result = await this.add(this.collection, user || {}, 'usuario');
-    // Guardar el documento (registro) en la colección
+    // guardar docuemnto en la coleccion de la base de datos
     return {
       status: result.status,
       message: result.message,
@@ -163,8 +168,7 @@ class UsersService extends ResolversOperationsService {
     if (id === undefined || id === '') {
       return {
         status: false,
-        message:
-          'Identificador no valido',
+        message: 'Identificador no valido',
         user: null,
       };
     }
@@ -174,24 +178,71 @@ class UsersService extends ResolversOperationsService {
       message: result.message,
     };
   }
-  async block() {
+  async unblock(unblock: boolean) {
     const id = this.getVariables().id;
+    const user = this.getVariables().user;
     if (!this.checkData(String(id) || '')) {
-        return {
-            status: false,
-            message: 'El ID del usuario no se ha especificado correctamente',
-            genre: null
-        };
+      return {
+        status: false,
+        message: 'El ID del usuario no se ha especificado correctamente',
+        genre: null,
+      };
     }
-    const result = await this.update(this.collection, { id }, { active: false }, 'usuario');
+    if (user?.password === '1234') {
+      return {
+        status: false,
+        message:
+          'En este caso no podemos activar porque no has cambiado el password que corresponde a "1234"',
+      };
+    }
+    let update = { active: unblock };
+    if (unblock) {
+      update = Object.assign(
+        {},
+        { active: true },
+        {
+          birthday: user?.birthday,
+          password: bcrypt.hashSync(user?.password, 10),
+        }
+      );
+    }
+    console.log(update);
+    const result = await this.update(
+      this.collection,
+      { id },
+      update,
+      'usuario'
+    );
+    const action = unblock ? 'Desbloqueado' : 'Bloqueado';
     return {
-        status: result.status,
-        message: (result.status) ? 'Bloqueado correctamente': 'No se ha bloqueado comprobarlo por favor'
+      status: result.status,
+      message: result.status
+        ? `${action} correctamente`
+        : `No se ha ${action.toLowerCase()} ERROR CRITICO`,
     };
   }
+  async activeEmail() {
+    const id = this.getVariables().user?.id;
+    const email = this.getVariables().user?.email || '';
+    if (email === undefined || email === '') {
+      return {
+        status: false,
+        message:
+          'Debes de especificar un correo electrónico para poder enviar el email de activación',
+      };
+    }
+    const token = new JWT().sign({ user: { id, email } }, EXPIRETIME.H1);
+    const html = `Para activar la cuenta haz click sobre esto: <a href="${process.env.CLIENT_URL}/#/active/${token}">Clic aquí</a>`;
+    const mail = {
+      subject: 'Activar usuario',
+      to: email,
+      html,
+    };
+    return new MailService().send(mail);
+  }
   private checkData(value: string) {
-    return (value === '' || value === undefined) ? false: true;
-}
+    return value === '' || value === undefined ? false : true;
+  }
 }
 
 export default UsersService;

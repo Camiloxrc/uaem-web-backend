@@ -1,18 +1,24 @@
 "Opciones de escritura registro"
 type Mutation {
-    "Apartado de los usuarios"
-    register(user: UserInput!): ResultUser
-    updateUser(user: UserInput!): ResultUser
-    deleteUser(id: ID!): ResultUser
-    blockUser(id: ID!): ResultUser
-    "Apartado de los generos"
-    addGenre(genre: String!): ResultGenre
-    updateGenre(id: ID!, genre: String!): ResultGenre
-    deleteGenre(id: ID!): ResultGenre
-    blockGenre(id: ID!): ResultGenre
-    "Apartado de los tags"
-    addTag(tag: String!): ResultTag
-    updateTag(id: ID!, tag: String!): ResultTag
-    deleteTag(id: ID!): ResultTag
-    blockTag(id: ID!): ResultTag
+  "Apartado de los usuarios"
+  register(user: UserInput!): ResultUser
+  updateUser(user: UserInput!): ResultUser
+  deleteUser(id: ID!): ResultUser
+  blockUser(id: ID!): ResultUser
+  "Apartado de los generos"
+  addGenre(genre: String!): ResultGenre
+  updateGenre(id: ID!, genre: String!): ResultGenre
+  deleteGenre(id: ID!): ResultGenre
+  blockGenre(id: ID!): ResultGenre
+  "Apartado de los tags"
+  addTag(tag: String!): ResultTag
+  updateTag(id: ID!, tag: String!): ResultTag
+  deleteTag(id: ID!): ResultTag
+  blockTag(id: ID!): ResultTag
+  "Uso de nodemailer"
+  sendEmail(mail: MailInput!): ResultMail
+  activeUserEmail(id: ID!, email: String!): ResultMail
+  activeUserAction(id: ID!, birthday: String!, password: String!): ResultMail
+  resetPassword(email: String!): ResultMail
+  changePassword(id: ID!, password: String!): ResultUser
 }
