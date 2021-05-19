@@ -5,7 +5,6 @@ import MailService from '../../services/mail.service';
 import PasswordService from '../../services/password.service';
 import UsersService from '../../services/users.service';
 
-
 const resolversMailMutation: IResolvers = {
   Mutation: {
     async sendEmail(_, { mail }) {
@@ -41,7 +40,7 @@ function verifyToken(token: string, id: string) {
   if (checkToken === MESSAGES.TOKEN_VERIFICATION_FAILED) {
     return {
       status: false,
-      message: 'El tiempo de activacion ha caducado.',
+      message: 'El periodo para activar el usuario ha finalizado. Contacta con el administrador para más información.',
     };
   }
   // Si el token es valido , asignamos la información al usuario
@@ -49,7 +48,7 @@ function verifyToken(token: string, id: string) {
   if (user.id !== id) {
     return {
       status: false,
-      message: 'El token no corresponde al usuario'
+      message: 'El usuario del token no corresponde al añadido en el argumento'
     };
   }
 }

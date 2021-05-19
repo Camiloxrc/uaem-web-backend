@@ -24,7 +24,7 @@ class PasswordService extends ResolversOperationsService {
     const user = await findOneElement(this.getDb(), COLLECTIONS.USERS, {
       email,
     });
-    // Usuario indefinido
+    // Si usuario indefinido
     if (user === undefined || user === null) {
       return {
         status: false,
@@ -38,7 +38,7 @@ class PasswordService extends ResolversOperationsService {
     const token = new JWT().sign({ user: newUser }, EXPIRETIME.M15);
     const html = 
     `<h1>Restablecer contraseña</h1>
-    <br>Usa este enlace para restablecer la contraseña de tu cuenta: <a href="${process.env.CLIENT_URL}/#/reset/${token}">hacer clic aquí </a><br>
+    <br>Usa este enlace para restablecer la contraseña de tu cuenta: <a href="${process.env.CLIENT_URL}/reset/${token}">hacer clic aquí </a><br>
     <br> Si no reconoce la cuenta ignore este mensaje.<br>
     <br>Gracias.
     <br>Equipo de cuentas UAEM.

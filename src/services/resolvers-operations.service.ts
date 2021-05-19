@@ -1,14 +1,14 @@
-import { IVariables } from "./../interfaces/variables-interface";
-import { IContextData } from "./../interfaces/context-data.interface";
+import { IVariables } from './../interfaces/variables-interface';
+import { IContextData } from './../interfaces/context-data.interface';
 import {
   findElements,
   findOneElement,
   insertOneElement,
   updateOneElement,
   deleteOneElement,
-} from "./../lib/db-operations";
-import { Db } from "mongodb";
-import { pagination } from "../lib/pagination";
+} from './../lib/db-operations';
+import { Db } from 'mongodb';
+import { pagination } from '../lib/pagination';
 
 class ResolversOperationsService {
   private variables: IVariables;
@@ -100,7 +100,7 @@ class ResolversOperationsService {
           if (res.result.ok === 1) {
             return {
               status: true,
-              message: `Se agrego correctamnte el ${item}.`,
+              message: `Te registraste correctamente ${item}.`,
               item: document,
             };
           }
