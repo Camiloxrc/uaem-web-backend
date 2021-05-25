@@ -10,7 +10,10 @@ export const SECRET_KEY = process.env.SECRET || 'gonzamalparido12xd';
 export enum COLLECTIONS {
   USERS = 'users',
   GENRES = 'genres',
-  TAGS = 'tags'
+  TAGS = 'tags',
+  SHOP_PRODUCT = 'products_platforms',
+  PRODUCTS = 'products',
+  PLATFORMS = 'platforms'
 }
 
 //Mensajes de error
@@ -24,4 +27,9 @@ export enum EXPIRETIME {
   M15 = H1 / 4,
   M20 = H1 / 3,
   D5 = H24 * 5,
+}
+export enum ACTIVE_VALUES_FILTER {
+  ALL = 'ALL',
+  INACTIVE = 'INACTIVE',
+  ACTIVE = 'ACTIVE'
 }

@@ -100,7 +100,7 @@ class ResolversOperationsService {
           if (res.result.ok === 1) {
             return {
               status: true,
-              message: `Te registraste correctamente ${item}.`,
+              message: `Registrado correctamente el ${item}.`,
               item: document,
             };
           }

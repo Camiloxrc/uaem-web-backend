@@ -1,5 +1,6 @@
 import { IResolvers } from 'graphql-tools';
-import { MESSAGES } from '../../config/constants';
+import { COLLECTIONS, EXPIRETIME, MESSAGES } from '../../config/constants';
+import { findOneElement } from '../../lib/db-operations';
 import JWT from '../../lib/jwt';
 import MailService from '../../services/mail.service';
 import PasswordService from '../../services/password.service';
@@ -21,7 +22,32 @@ const resolversMailMutation: IResolvers = {
       return new UsersService(_, { id, user: { birthday, password } }, {token, db}).unblock(true);
     },
     async resetPassword(_, {email}, {db}) {
-      return new PasswordService(_, {user: {email}}, {db}).resetMail();
+      const user = await findOneElement(db, COLLECTIONS.USERS, { email});
+      // Si usuario es indefinido mandamos un mensaje que no existe el usuario
+      if (user === undefined || user === null) {
+        return {
+          status: false,
+          message: `Usuario con el email ${email} no existe`
+        };
+      }
+      const newUser = {
+        id: user.id,
+        email
+      };
+      const token = new JWT().sign({ user: newUser }, EXPIRETIME.M15);
+      const html = 
+      `<h1>Restablecer contraseña</h1>
+      <br>Usa este enlace para restablecer la contraseña de tu cuenta: <a href="${process.env.CLIENT_URL}/reset/${token}">hacer clic aquí </a><br>
+      <br> Si no reconoce la cuenta ignore este mensaje.<br>
+      <br>Gracias.
+      <br>Equipo de cuentas UAEM.
+      `;
+      const mail = {
+        to: email || '',
+        subject: 'Restablecimiento de contraseña de la cuenta Tienda UAEM',
+        html,
+      };
+      return new MailService().send(mail);
     },
     async changePassword(_, { id, password}, { db, token }) {
       // verificar el token
