@@ -16,7 +16,7 @@ export enum COLLECTIONS {
   PLATFORMS = 'platforms'
 }
 
-//Mensajes de error
+//Mensajes de error con el token
 export enum MESSAGES {
   TOKEN_VERIFICATION_FAILED = 'Token Invalido o caducado',
 }
