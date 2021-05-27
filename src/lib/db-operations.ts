@@ -76,19 +76,16 @@ export const findElements = async (
     pages: 1,
     itemsPage: -1,
     skip: 0,
-    total: -1,
+    total: -1
   }
 ) => {
   if (paginationOptions.total === -1) {
     return await database.collection(collection).find(filter).toArray();
   }
-  return await database
-    .collection(collection)
-    .find(filter)
-    .limit(paginationOptions.itemsPage)
-    .skip(paginationOptions.skip)
-    .toArray();
+  return await database.collection(collection).find(filter).limit(paginationOptions.itemsPage)
+                        .skip(paginationOptions.skip).toArray();
 };
+
 
 export const countElements = async (
   database: Db,
@@ -114,3 +111,4 @@ export const randomItems = async(
     ).toArray());
   });
 };
+

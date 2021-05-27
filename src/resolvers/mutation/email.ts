@@ -11,16 +11,6 @@ const resolversMailMutation: IResolvers = {
     async sendEmail(_, { mail }) {
       return new MailService().send(mail);
     },
-    async activeUserEmail(_, { id, email }) {
-      return new UsersService(_, {user: {id, email}}, {}).activeEmail();
-    },
-    async activeUserAction(_, { id, birthday, password }, {token, db}) {
-      const verify = verifyToken(token, id);
-      if (verify?.status === false) {
-        return { status: false, message: verify.message};
-      }
-      return new UsersService(_, { id, user: { birthday, password } }, {token, db}).unblock(true);
-    },
     async resetPassword(_, {email}, {db}) {
       const user = await findOneElement(db, COLLECTIONS.USERS, { email});
       // Si usuario es indefinido mandamos un mensaje que no existe el usuario

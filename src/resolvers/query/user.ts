@@ -2,10 +2,10 @@ import { IResolvers } from 'graphql-tools';
 import UsersService from '../../services/users.service';
 const resolversUserQuery: IResolvers = {
   Query: {
-    async users(_, { page, itemsPage}, context) {
+    async users(_, { page, itemsPage, active}, context) {
       return new UsersService(_, {
         pagination: { page, itemsPage}
-    }, context).items();
+    }, context).items(active);
     },
 
     async login(_, { email, password }, context) {

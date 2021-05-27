@@ -1,23 +1,18 @@
-import { MESSAGES, SECRET_KEY, EXPIRETIME } from './../config/constants';
+import { IJwt } from './../interfaces/jwt.interface';
+import { SECRET_KEY, MESSAGES, EXPIRETIME } from './../config/constants';
 import jwt from 'jsonwebtoken';
-import { IJwt } from '../interfaces/jwt.interface';
 
-//uso de Json web token instalado en las dependencias
-
-// Creacion de token de acceso a la info
-class JWT{
-    //funcion para la clave
+class JWT {
     private secretKey = SECRET_KEY as string;
-    //Tiempo de caducidad e informacion del payload
-    sign(data: IJwt, expiresIn: number = EXPIRETIME.H24 ) {  
+    // Informaci´pn del payload con fecha de caducidad 24 horas por defecto
+    sign(data: IJwt, expiresIn: number = EXPIRETIME.H24 ) {
         return jwt.sign(
-            { user: data.user},
+            { user: data.user },
             this.secretKey,
             { expiresIn} 
         );
     }
 
-    //verificacion del token
     verify(token: string) {
         try {
             return jwt.verify(token, this.secretKey);
@@ -27,4 +22,4 @@ class JWT{
     }
 }
 
-export default JWT; 
+export default JWT;
