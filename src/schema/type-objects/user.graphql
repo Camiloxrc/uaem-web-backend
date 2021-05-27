@@ -1,23 +1,23 @@
 """
-La informacion del usuario con relacion a la base de datos, 
-manejando como referencia el formato ISO para los casos de 
-registerdate y birthday
-
+Vamos a especificar la información detallada del usuario.
+* Vamos a tener en cuenta:
+email = usuario del cliente de la base de datos.
+Fecha de nacimiento y registro en formato ISO
 """
 type User {
-    "Identificador Unico"
+    "Identificado único"
     id: ID!
-    "Nombre"
+    "Nombre de pila"
     name: String!
-    "Apellido"
+    "Apellido/s"
     lastname: String!
-    "Correo  Unico"
+    "Correo electrónico"
     email: String!
-    "Contrasena"
+    "Password asociado a la cuenta"
     password: String!
-    "Fecha de registro"
+    "Fecha de registro en la Base de datos"
     registerdate: String!
-    "Cumpleanos"
+    "Fecha de nacimiento - Solo mayores de 18 años"
     birthday: String!
     "Permisos del usuario"
     role: Role!

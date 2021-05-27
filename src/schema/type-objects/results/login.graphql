@@ -1,11 +1,10 @@
-
 type ResultLogin implements Result {
-    "Estado de la operacion"
+    "Estado de la operación"
     status: Boolean!
-    "Mnesaje de la operacion"
+    "Mensaje de la operación para dar feedback"
     message: String!
-    "login del usuario por medio de token"
+    "Información del token del usuario logueado"
     token: String
-    "Informacion de sesion del usuario"
+    "Información del usuario"
     user: User
 }

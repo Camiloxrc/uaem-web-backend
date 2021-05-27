@@ -1,3 +1,4 @@
+import { ACTIVE_VALUES_FILTER } from './../config/constants';
 import { findOneElement, asignDocumentId } from './../lib/db-operations';
 import { COLLECTIONS, EXPIRETIME, MESSAGES } from '../config/constants';
 import { IContextData } from '../interfaces/context-data.interface';
@@ -6,21 +7,25 @@ import bcrypt from 'bcrypt';
 import JWT from '../lib/jwt';
 import MailService from './mail.service';
 class UsersService extends ResolversOperationsService {
+  activeEmail(): any {
+    throw new Error('Method not implemented.');
+  }
   private collection = COLLECTIONS.USERS;
   constructor(root: object, variables: object, context: IContextData) {
     super(root, variables, context);
   }
 
   // Lista de usuarios
-  async items() {
+  async items(active: string = ACTIVE_VALUES_FILTER.ACTIVE) {
+    let filter: object = { active: {$ne: false}};
+    if (active === ACTIVE_VALUES_FILTER.ALL) {
+      filter = {};
+    } else if (active === ACTIVE_VALUES_FILTER.INACTIVE) {
+      filter = { active: false };
+    }
     const page = this.getVariables().pagination?.page;
     const itemsPage = this.getVariables().pagination?.itemsPage;
-    const result = await this.list(
-      this.collection,
-      'usuarios',
-      page,
-      itemsPage
-    );
+    const result = await this.list(this.collection, 'usuarios', page, itemsPage, filter);
     return {
       info: result.info,
       status: result.status,
@@ -40,7 +45,7 @@ class UsersService extends ResolversOperationsService {
     }
     return {
       status: true,
-      message: 'Usuario verificado con el token',
+      message: 'Usuario autenticado correctamente mediante el token',
       user: Object.values(info)[0],
     };
   }
@@ -54,7 +59,7 @@ class UsersService extends ResolversOperationsService {
       if (user === null) {
         return {
           status: false,
-          message: 'El usuario no existe',
+          message: 'Usuario no existe',
           token: null,
         };
       }
@@ -71,8 +76,8 @@ class UsersService extends ResolversOperationsService {
       return {
         status: passwordCheck,
         message: !passwordCheck
-          ? 'Contraseña Incorrecta'
-          : `Bienvenido ${user?.name}`,
+          ? 'Password y usuario no son correctos, sesión no iniciada'
+          : 'Usuario cargado correctamente',
         token: !passwordCheck ? null : new JWT().sign({ user }, EXPIRETIME.H24),
         user: !passwordCheck ? null : user,
       };
@@ -80,7 +85,8 @@ class UsersService extends ResolversOperationsService {
       console.log(error);
       return {
         status: false,
-        message: 'Error CRITICO al cargar los datos del usuario',
+        message:
+          'Error al cargar el usuario. Comprueba que tienes correctamente todo.',
         token: null,
       };
     }
@@ -93,7 +99,7 @@ class UsersService extends ResolversOperationsService {
     if (user === null) {
       return {
         status: false,
-        message: 'Usuario no establecido',
+        message: 'Usuario no definido, procura definirlo',
         user: null,
       };
     }
@@ -104,7 +110,7 @@ class UsersService extends ResolversOperationsService {
     ) {
       return {
         status: false,
-        message: 'Contraseña no valida',
+        message: 'Usuario sin password correcto, procura definirlo',
         user: null,
       };
     }
@@ -116,22 +122,22 @@ class UsersService extends ResolversOperationsService {
     if (userCheck !== null) {
       return {
         status: false,
-        message: `El email ${user?.email} se encuentra registrado`,
+        message: `El email ${user?.email} está registrado y no puedes registrarte con este email`,
         user: null,
       };
     }
 
-    // asignar ID con wl ultimo usuario de referencia
+    // COmprobar el último usuario registrado para asignar ID
     user!.id = await asignDocumentId(this.getDb(), this.collection, {
       registerdate: -1,
     });
-    // Asignar la fecha
+    // Asignar la fecha en formato ISO en la propiedad registerDate
     user!.registerdate = new Date().toISOString();
-    // Encriptar contrasena
+    // Encriptar password
     user!.password = bcrypt.hashSync(user!.password, 10);
 
     const result = await this.add(this.collection, user || {}, 'usuario');
-    // guardar docuemnto en la coleccion de la base de datos
+    // Guardar el documento (registro) en la colección
     return {
       status: result.status,
       message: result.message,
@@ -145,7 +151,7 @@ class UsersService extends ResolversOperationsService {
     if (user === null) {
       return {
         status: false,
-        message: 'Usuario establecido',
+        message: 'Usuario no definido, procura definirlo',
         user: null,
       };
     }
@@ -168,7 +174,8 @@ class UsersService extends ResolversOperationsService {
     if (id === undefined || id === '') {
       return {
         status: false,
-        message: 'Identificador no valido',
+        message:
+          'Identificador del usuario no definido, procura definirlo para eliminar el usuario',
         user: null,
       };
     }
@@ -178,71 +185,60 @@ class UsersService extends ResolversOperationsService {
       message: result.message,
     };
   }
-  async unblock(unblock: boolean) {
+  async unblock(unblock: boolean, admin: boolean) {
     const id = this.getVariables().id;
     const user = this.getVariables().user;
     if (!this.checkData(String(id) || '')) {
-      return {
-        status: false,
-        message: 'El ID del usuario no se ha especificado correctamente',
-        genre: null,
-      };
+        return {
+            status: false,
+            message: 'El ID del usuario no se ha especificado correctamente',
+            genre: null
+        };
     }
     if (user?.password === '1234') {
       return {
         status: false,
-        message:
-          'En este caso no podemos activar porque no has cambiado el password que corresponde a "1234"',
+        message: 'En este caso no podemos activar porque no has cambiado el password que corresponde a "1234"'
       };
     }
-    let update = { active: unblock };
-    if (unblock) {
-      update = Object.assign(
-        {},
-        { active: true },
+    let update = {active: unblock};
+    if (unblock && !admin) {
+      console.log('Soy cliente y estoy cambiando la contraseña');
+      update = Object.assign({}, {active: true}, 
         {
-          birthday: user?.birthday,
-          password: bcrypt.hashSync(user?.password, 10),
-        }
-      );
+          birthday: user?.birthday, 
+          password: bcrypt.hashSync(user?.password, 10)
+        });
     }
-    console.log(update);
-    const result = await this.update(
-      this.collection,
-      { id },
-      update,
-      'usuario'
-    );
-    const action = unblock ? 'Desbloqueado' : 'Bloqueado';
+    const result = await this.update(this.collection, { id }, update, 'usuario');
+    const action = (unblock) ? 'Desbloqueado' : 'Bloqueado';
     return {
-      status: result.status,
-      message: result.status
-        ? `${action} correctamente`
-        : `No se ha ${action.toLowerCase()} ERROR CRITICO`,
+        status: result.status,
+        message: (result.status) ? `${action} correctamente`: `No se ha ${action.toLowerCase()} comprobarlo por favor`
     };
   }
-  async activeEmail() {
+
+  async active() {
     const id = this.getVariables().user?.id;
     const email = this.getVariables().user?.email || '';
     if (email === undefined || email === '') {
       return {
         status: false,
-        message:
-          'Debes de especificar un correo electrónico para poder enviar el email de activación',
+        message: 'El email no se ha definido correctamente'
       };
     }
-    const token = new JWT().sign({ user: { id, email } }, EXPIRETIME.H1);
+    const token = new JWT().sign({user: {id, email}}, EXPIRETIME.H1);
     const html = `Para activar la cuenta haz click sobre esto: <a href="${process.env.CLIENT_URL}/#/active/${token}">Clic aquí</a>`;
     const mail = {
       subject: 'Activar usuario',
       to: email,
-      html,
+      html
     };
     return new MailService().send(mail);
   }
   private checkData(value: string) {
-    return value === '' || value === undefined ? false : true;
-  }
+    return (value === '' || value === undefined) ? false: true;
+}
 }
 
 export default UsersService;

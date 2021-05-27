@@ -1,3 +1,4 @@
+"Tipo de objeto para almacenar la información de generos de videojuegos"
 type Tag implements Item {
     id: ID!
     name: String!

@@ -4,6 +4,6 @@ type Mail {
     to: String!
     "Asunto"
     subject: String!
-    "Contenido del email"
+    "Contenido del email con HTML"
     html: String!
 }

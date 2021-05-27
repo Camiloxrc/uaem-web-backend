@@ -1,19 +1,20 @@
+
 type ResultUsers implements Result {
     "Mostra información del sistema de paginación"
     info: ResultInfo
-    "Estado de la operacion"
+    "Estado de la operación"
     status: Boolean!
-    "Mnesaje de la operacion"
+    "Mensaje de la operación para dar feedback"
     message: String!
-    "Usuarios en la base de datos"
+    "Lista de usuarios registrados en la Base de datos (Clientes / Admins)"
     users: [User!]!
 }
 
 type ResultUser implements Result {
-    "Estado de la operacion"
+    "Estado de la operación"
     status: Boolean!
-    "Mnesaje de la operacion"
+    "Mensaje de la operación para dar feedback"
     message: String!
-    "info del Usuario"
+    "Información del usuario"
     user: User
 }

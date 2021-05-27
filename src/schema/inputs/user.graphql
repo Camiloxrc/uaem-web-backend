@@ -1,18 +1,19 @@
-"Establecemos los parametros para agregar usuarios al registro"
-input UserInput{
+"Input para añadir los datos del usuario en el registro"
+input UserInput {
+    "Identificador en este caso no obligatorio"
     id: ID
-    "Nombre"
+    "Nombre de pila"
     name: String!
-    "Apellido"
+    "Apellido/s"
     lastname: String!
-    "Correo  Unico"
+    "Correo electrónico"
     email: String!
-    "Contrasena"
+    "Password asociado a la cuenta"
     password: String
-    "Cumpleanos"
+    "Fecha de nacimiento - Solo mayores de 18 años"
     birthday: String!
     "Permisos del usuario"
-    role: Role = CLIENT
+    role: Role=CLIENT
     "Activo o no activo"
     active: Boolean
 }
