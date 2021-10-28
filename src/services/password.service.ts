@@ -33,7 +33,7 @@ class PasswordService extends ResolversOperationsService {
       email,
     };
     const token = new JWT().sign({ user: newUser }, EXPIRETIME.M15);
-    const html = `Para cambiar de contraseña haz click sobre esto: <a href="${process.env.CLIENT_URL}/#/reset/${token}">Clic aquí</a>`;
+    const html = `Para cambiar de contraseña haz click sobre esto: <a href="${process.env.CLIENT_URL}/reset/${token}">Clic aquí</a>`;
     const mail = {
       to: email,
       subject: 'Petición para cambiar de contraseña',

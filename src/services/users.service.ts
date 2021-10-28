@@ -228,7 +228,7 @@ class UsersService extends ResolversOperationsService {
       };
     }
     const token = new JWT().sign({user: {id, email}}, EXPIRETIME.H1);
-    const html = `Para activar la cuenta haz click sobre esto: <a href="${process.env.CLIENT_URL}/#/active/${token}">Clic aquí</a>`;
+    const html = `Para activar la cuenta haz click sobre esto: <a href="${process.env.CLIENT_URL}/active/${token}">Clic aquí</a>`;
     const mail = {
       subject: 'Activar usuario',
       to: email,
