@@ -59,7 +59,7 @@ class UsersService extends ResolversOperationsService {
       if (user === null) {
         return {
           status: false,
-          message: 'Usuario no existe',
+          message: 'No se pudo encontrar tu cuenta',
           token: null,
         };
       }
@@ -76,8 +76,8 @@ class UsersService extends ResolversOperationsService {
       return {
         status: passwordCheck,
         message: !passwordCheck
-          ? 'Password y usuario no son correctos, sesión no iniciada'
-          : 'Usuario cargado correctamente',
+          ? 'Verifica tu usuario o contrasena'
+          : 'Hola de nuevo',
         token: !passwordCheck ? null : new JWT().sign({ user }, EXPIRETIME.H24),
         user: !passwordCheck ? null : user,
       };
@@ -86,7 +86,7 @@ class UsersService extends ResolversOperationsService {
       return {
         status: false,
         message:
-          'Error al cargar el usuario. Comprueba que tienes correctamente todo.',
+          '',
         token: null,
       };
     }
@@ -99,7 +99,7 @@ class UsersService extends ResolversOperationsService {
     if (user === null) {
       return {
         status: false,
-        message: 'Usuario no definido, procura definirlo',
+        message: 'Usuario no definido',
         user: null,
       };
     }
@@ -110,7 +110,7 @@ class UsersService extends ResolversOperationsService {
     ) {
       return {
         status: false,
-        message: 'Usuario sin password correcto, procura definirlo',
+        message: 'Usuario sin contrasena',
         user: null,
       };
     }
@@ -122,7 +122,7 @@ class UsersService extends ResolversOperationsService {
     if (userCheck !== null) {
       return {
         status: false,
-        message: `El email ${user?.email} está registrado y no puedes registrarte con este email`,
+        message: `El email ${user?.email} ya esta registrado`,
         user: null,
       };
     }
@@ -151,7 +151,7 @@ class UsersService extends ResolversOperationsService {
     if (user === null) {
       return {
         status: false,
-        message: 'Usuario no definido, procura definirlo',
+        message: 'Usuario no definido',
         user: null,
       };
     }
@@ -175,7 +175,7 @@ class UsersService extends ResolversOperationsService {
       return {
         status: false,
         message:
-          'Identificador del usuario no definido, procura definirlo para eliminar el usuario',
+          'Identificador del usuario no definido',
         user: null,
       };
     }
@@ -198,7 +198,7 @@ class UsersService extends ResolversOperationsService {
     if (user?.password === '1234') {
       return {
         status: false,
-        message: 'En este caso no podemos activar porque no has cambiado el password que corresponde a "1234"'
+        message: 'contrasena no valida'
       };
     }
     let update = {active: unblock};
