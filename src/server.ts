@@ -45,7 +45,7 @@ async function init() {
 // Creacion del http escuachando las peticiones del puerto 8000
 
   const httpServer = createServer(app);
-  const PORT =process.env.PORT || 8000;
+  const PORT =process.env.PORT || 2002;
 
   httpServer.listen(
     {
