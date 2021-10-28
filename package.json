@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/Deimoscc/uaem-web-backend#readme",
   "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
+    "node": "14.17.0",
+    "npm": "7.20.3"
   },
   "dependencies": {
     "@graphql-tools/load-files": "^6.2.5",
